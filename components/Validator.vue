@@ -15,7 +15,7 @@
           </p>
           <div class="mt-6 flex">
             <input class="shadow mr-4 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline " id="message" type="text" placeholder="SMS message">
-            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
+            <button @click="getValidation" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
               Validate
             </button> 
           </div>
@@ -46,6 +46,14 @@
 
 <script>
 export default {
-  name: 'Validator'
+  name: 'Validator',
+  methods: {
+    async getValidation(){
+      const token = 'Bearer FlUaf2XgYe/b3BJkBlsV7wRrvJaXNuJp4Xqax4a25tLG9hygVRd6ctkx8zY1BFx2G4DTnX7MxSiYNs8iOGhg6g=='
+      const URL = "https://ussouthcentral.services.azureml.net/workspaces/cdef93b81c194d23b631e9efdb6af565/services/ad000ea1767a49d083be747b4a1cb55b/execute?api-version=2.0&details=true";
+      const res = await this.$axios.$get(URL, { headers: { Authorization: token } });
+      console.log(res)
+    }
+  }
 }
 </script>

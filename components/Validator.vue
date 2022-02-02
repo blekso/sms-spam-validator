@@ -14,7 +14,7 @@
             To get started enter your desired SMS message and click validate, have fun!
           </p>
           <div class="mt-6 flex">
-            <input class="shadow mr-4 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline " id="message" type="text" placeholder="SMS message">
+            <input v-model="inputData" class="shadow mr-4 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline " id="message" type="text" placeholder="SMS message">
             <button @click="getValidation" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
               Validate
             </button> 
@@ -24,7 +24,8 @@
           <p class="text-gray-800 mr-4">
             Your SMS message is: 
           </p>
-          <p class="text-gray-400">waiting for validation</p>
+          <p v-if="!output" class="text-gray-400">waiting for validation</p>
+          <p v-else class="text-green-500">{{output}} with {{probabilities}} probabilities</p>
         </div>
       </form>
       <div class="flex justify-center pt-4 space-x-2">
@@ -47,13 +48,39 @@
 <script>
 export default {
   name: 'Validator',
+  data() {
+    return {
+      inputData: '',
+      output: '',
+      probabilities: 0
+    }      
+  },
   methods: {
     async getValidation(){
-      console.log('test run..')
+      console.log('test')
       const token = 'Bearer FlUaf2XgYe/b3BJkBlsV7wRrvJaXNuJp4Xqax4a25tLG9hygVRd6ctkx8zY1BFx2G4DTnX7MxSiYNs8iOGhg6g=='
       const URL = "https://ussouthcentral.services.azureml.net/workspaces/cdef93b81c194d23b631e9efdb6af565/services/ad000ea1767a49d083be747b4a1cb55b/execute?api-version=2.0&details=true";
-      const res = await this.$axios.$get(URL, { headers: { Authorization: token } });
-      console.log(res)
+      const res = await this.$axios.$post(URL, {"Inputs": {
+          "input1": {
+            "ColumnNames": [
+              "v1",
+              "v2"
+            ],
+            "Values": [
+              [
+                'yo', this.inputData
+              ]
+            ]
+          }
+        },
+        "GlobalParameters": {}} ,{ headers: { Authorization: token } });
+      this.output = res.Results.output1.value.Values[0][1025]
+      if(this.output === 'ham'){
+        this.probabilities = 100 - res.Results.output1.value.Values[0][1026] * 100
+      } else {
+        this.probabilities = res.Results.output1.value.Values[0][1026] * 100
+      }
+      
     }
   }
 }

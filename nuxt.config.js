@@ -37,11 +37,16 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
-    '@nuxtjs/axios'
+    '@nuxtjs/axios',
+    '@nuxtjs/proxy'
   ],
-
+  
   axios: {
-    baseURL: 'http://localhost:4000', // Used as fallback if no runtime config is provided
+    proxy: true
+  },
+  
+  proxy: {
+    '/api/': { target: 'https://ussouthcentral.services.azureml.net/workspaces/cdef93b81c194d23b631e9efdb6af565/services/ad000ea1767a49d083be747b4a1cb55b/execute?api-version=2.0&details=true', pathRewrite: {'^/api/': ''}, changeOrigin: true }
   },
 
   publicRuntimeConfig: {

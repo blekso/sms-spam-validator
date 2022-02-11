@@ -14,7 +14,10 @@
             To get started enter your desired SMS message and click validate, have fun!
           </p>
           <div class="mt-6 flex">
-            <input v-model="inputData" class="shadow mr-4 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline " id="message" type="text" placeholder="SMS message">
+            <div class="mr-4 w-full flex relative">
+              <input v-model="inputData" class="shadow w-full appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline " id="message" type="text" placeholder="SMS message">
+              <img src="dice.png" class="valign z-10 cursor-pointer" @click="sentence">
+            </div>
             <button @click="getValidation" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
               Validate
             </button> 
@@ -46,16 +49,33 @@
 </template>
 
 <script>
+var verbs, nouns, adjectives, adverbs, preposition;
+nouns = ["bird", "clock", "boy", "plastic", "duck", "teacher", "old lady", "professor", "hamster", "dog"];
+verbs = ["kicked", "ran", "flew", "dodged", "sliced", "rolled", "died", "breathed", "slept", "killed"];
+adjectives = ["beautiful", "lazy", "professional", "lovely", "dumb", "rough", "soft", "hot", "vibrating", "slimy"];
+adverbs = ["slowly", "elegantly", "precisely", "quickly", "sadly", "humbly", "proudly", "shockingly", "calmly", "passionately"];
+preposition = ["down", "into", "up", "on", "upon", "below", "above", "through", "across", "towards"];
+
 export default {
   name: 'Validator',
   data() {
     return {
       inputData: '',
       output: '',
-      probabilities: 0
+      probabilities: 0,
     }      
   },
   methods: {
+    randGen() {
+      return Math.floor(Math.random() * 5);
+    },
+    sentence() {
+      var rand1 = Math.floor(Math.random() * 10);
+      var rand2 = Math.floor(Math.random() * 10);
+      var rand3 = Math.floor(Math.random() * 10);
+      var rand4 = Math.floor(Math.random() * 10);
+      this.inputData = "The " + adjectives[rand1] + " " + nouns[rand2] + " " + adverbs[rand3] + " " + verbs[rand4];
+    },
     async getValidation(){
       const token = 'Bearer FlUaf2XgYe/b3BJkBlsV7wRrvJaXNuJp4Xqax4a25tLG9hygVRd6ctkx8zY1BFx2G4DTnX7MxSiYNs8iOGhg6g=='
       const URL = "https://ussouthcentral.services.azureml.net/workspaces/cdef93b81c194d23b631e9efdb6af565/services/ad000ea1767a49d083be747b4a1cb55b/execute?api-version=2.0&details=true";
@@ -85,3 +105,12 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.valign {
+    position: absolute;
+    top: 50%;
+    right: 2.5%;
+    transform: translateY(-50%);
+}
+</style>

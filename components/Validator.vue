@@ -28,7 +28,7 @@
             Your SMS message is: 
           </p>
           <p v-if="!output" class="text-gray-400">waiting for validation</p>
-          <p v-else class="text-green-500">{{output}} with {{probabilities}} probabilities</p>
+          <p v-else :class="output == 'ham' ? 'text-green-500' : 'text-red-500'">{{output}} with {{probabilities}} probabilities</p>
         </div>
       </form>
       <div class="flex justify-center pt-4 space-x-2">
@@ -49,12 +49,22 @@
 </template>
 
 <script>
-var verbs, nouns, adjectives, adverbs, preposition;
+var verbs, nouns, adjectives, adverbs, preposition, spams;
 nouns = ["bird", "clock", "boy", "plastic", "duck", "teacher", "old lady", "professor", "hamster", "dog"];
 verbs = ["kicked", "ran", "flew", "dodged", "sliced", "rolled", "died", "breathed", "slept", "killed"];
 adjectives = ["beautiful", "lazy", "professional", "lovely", "dumb", "rough", "soft", "hot", "vibrating", "slimy"];
 adverbs = ["slowly", "elegantly", "precisely", "quickly", "sadly", "humbly", "proudly", "shockingly", "calmly", "passionately"];
 preposition = ["down", "into", "up", "on", "upon", "below", "above", "through", "across", "towards"];
+spams = ["FreeMsg Why haven't you replied to my text? I'm Randy, sexy, female and live local. Luv to hear from u. Netcollex Ltd 08700621170150p per msg reply Stop to end",
+  "You are a winner U have been specially selected 2 receive Â£1000 cash or a 4* holiday (flights inc) speak to a live operator 2 claim 0871277810810",
+  "Please call our customer service representative on FREEPHONE 0808 145 4742 between 9am-11pm as you have WON a guaranteed Â£1000 cash or Â£5000 prize!",
+  "SMS AUCTION You have won a Nokia 7250i. This is what you get when you win our FREE auction. To take part send Nokia to 86021 now. HG/Suite342/2Lands Row/W1JHL 16+",
+  "Hottest pics straight to your phone!! See me getting Wet and Wanting, just for you xx Text PICS to 89555 now! txt costs 150p textoperator g696ga 18 XxX",
+  "CALL 09090900040 & LISTEN TO EXTREME DIRTY LIVE CHAT GOING ON IN THE OFFICE RIGHT NOW TOTAL PRIVACY NO ONE KNOWS YOUR [sic] LISTENING 60P MIN 24/7MP 0870753331018+",
+  "Free 1st week entry 2 TEXTPOD 4 a chance 2 win 40GB iPod or Â£250 cash every wk. Txt VPOD to 81303 Ts&Cs www.textpod.net custcare 08712405020.",
+  "it to 80488. Your 500 free text messages are valid until 31 December 2005.",
+  "U can WIN Â£100 of Music Gift Vouchers every week starting NOW Txt the word DRAW to 87066 TsCs www.ldew.com SkillGame,1Winaweek, age16.150ppermessSubscription",
+  "Thanks for your ringtone order, ref number K718. Your mobile will be charged Â£4.50. Should your tone not arrive please call customer services on 09065069120"]
 
 export default {
   name: 'Validator',
@@ -63,18 +73,23 @@ export default {
       inputData: '',
       output: '',
       probabilities: 0,
+      rand: 0
     }      
   },
   methods: {
-    randGen() {
-      return Math.floor(Math.random() * 5);
-    },
     sentence() {
-      var rand1 = Math.floor(Math.random() * 10);
-      var rand2 = Math.floor(Math.random() * 10);
-      var rand3 = Math.floor(Math.random() * 10);
-      var rand4 = Math.floor(Math.random() * 10);
-      this.inputData = "The " + adjectives[rand1] + " " + nouns[rand2] + " " + adverbs[rand3] + " " + verbs[rand4];
+      this.rand = Math.floor(Math.random() * 2);
+      if(this.rand == 0){
+        const rand1 = Math.floor(Math.random() * 10);
+        const rand2 = Math.floor(Math.random() * 10);
+        const rand3 = Math.floor(Math.random() * 10);
+        const rand4 = Math.floor(Math.random() * 10);
+        const rand5 = Math.floor(Math.random() * 10);
+        this.inputData = "The " + adjectives[rand1] + " " + nouns[rand2] + " " + adverbs[rand3] + " " + verbs[rand4] + " " + preposition[rand5];
+      } else {
+        const randSpam = Math.floor(Math.random() * 10);
+        this.inputData = spams[randSpam];
+      }
     },
     async getValidation(){
       const token = 'Bearer FlUaf2XgYe/b3BJkBlsV7wRrvJaXNuJp4Xqax4a25tLG9hygVRd6ctkx8zY1BFx2G4DTnX7MxSiYNs8iOGhg6g==';
